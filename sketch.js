@@ -19,6 +19,9 @@ function setup() {
   balloon.addAnimation("hotAirBalloon",balloonImage1);
   balloon.scale=0.5;
 
+  var balloonPosition = database.ref("balloon/position");
+  balloonPosition.on("value", readPos, showError);
+
   textSize(20); 
 }
 
@@ -27,28 +30,25 @@ function draw() {
   background(bg);
 
   if(keyDown(LEFT_ARROW)){
-    updatePos(0,10);
+    updatePos(-10,0);
     balloon.addAnimation("hotAirBalloon",balloonImage2);
     //write code to move air balloon in left direction
   }
   else if(keyDown(RIGHT_ARROW)){
-    updatePos(0,-10);
+    updatePos(10,0);
     balloon.addAnimation("hotAirBalloon",balloonImage2);
     //write code to move air balloon in right direction
   }
   else if(keyDown(UP_ARROW)){
-    updatePos(-10,0);
+    updatePos(0,-10);
     balloon.addAnimation("hotAirBalloon",balloonImage2);
     //write code to move air balloon in up direction
   }
   else if(keyDown(DOWN_ARROW)){
-    updatePos(10,0);
+    updatePos(0,10);
     balloon.addAnimation("hotAirBalloon",balloonImage2);
     //write code to move air balloon in down direction
   }
-
-  readPos();
-  WritePos();
 
   drawSprites();
   fill(0);
@@ -57,21 +57,17 @@ function draw() {
   text("Use arrow keys to move Hot Air Balloon!",40,40);
 }
 
-function WritePos() {
-  var balloonPosition = database.ref("balloon/position");
-  balloonPosition.on("value", readPosition, showError);
-}
 
 function readPos(data) {
-  position = data.val(value);
+  position = data.val();
   balloon.x = position.x;
   balloon.y = position.y;
 }
 
-function updatePos() {
+function updatePos(changeInX, changeInY) {
   database.ref("balloon/position").set({
-    "x": position.x + position.x ,
-    "y": position.y + position.y
+    "x": balloon.x + changeInX ,
+    "y": balloon.y + changeInY
   })
 }
 
